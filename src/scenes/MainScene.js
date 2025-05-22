@@ -47,7 +47,7 @@ export class MainScene extends Scene {
 
     setupUI() {
         // Scale UI elements
-        const fontSize = this.getScaledSize(32);
+        const fontSize = this.getScaledSize(50);
         this.scoreText = this.add.text(16, 16, "Score: 0", {
             fontSize: `${fontSize}px`,
             fill: "#fff",
@@ -195,7 +195,9 @@ export class MainScene extends Scene {
                 }, 500);
 
                 this.time.delayedCall(500, () => {
-                    this.showGameOver();
+                    if (!this.gameOver) {
+                        this.showGameOver();
+                    }
                 });
             }
         });
@@ -392,6 +394,30 @@ export class MainScene extends Scene {
                         onComplete: () => p.destroy(),
                     });
                 }
+
+                const pointText = this.add.text(
+                    target.x,
+                    target.y,
+                    target.points,
+                    {
+                        font: "32px Arial",
+                        fill: "#ffffff",
+                    }
+                );
+
+                this.tweens.add({
+                    targets: pointText,
+                    x: 120,
+                    y: 10,
+                    alpha: 0,
+                    scale: 0.5,
+                    duration: 1500,
+                    ease: "Power2",
+                    onComplete: () => {
+                        pointText.destroy();
+                    },
+                });
+
                 target.destroy();
                 this.score += target.points;
                 this.scoreText.setText("Score: " + this.score);
@@ -407,7 +433,9 @@ export class MainScene extends Scene {
                         }, 500);
 
                         this.time.delayedCall(500, () => {
-                            this.showGameOver();
+                            if (!this.gameOver) {
+                                this.showGameOver();
+                            }
                         });
                     }
                 });
@@ -422,7 +450,9 @@ export class MainScene extends Scene {
             }, 500);
 
             this.time.delayedCall(500, () => {
-                this.showGameOver();
+                if (!this.gameOver) {
+                    this.showGameOver();
+                }
             });
         }
     }

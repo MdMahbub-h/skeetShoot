@@ -50,7 +50,7 @@ export class Level2Scene extends Scene {
 
     setupUI() {
         // Scale UI elements
-        const fontSize = this.getScaledSize(32);
+        const fontSize = this.getScaledSize(50);
         this.scoreText = this.add.text(16, 16, "Score: 0", {
             fontSize: `${fontSize}px`,
             fill: "#fff",
@@ -219,7 +219,9 @@ export class Level2Scene extends Scene {
                 }, 500);
 
                 this.time.delayedCall(500, () => {
-                    this.showGameOver();
+                    if (!this.gameOver) {
+                        this.showGameOver();
+                    }
                 });
             }
         });
@@ -231,86 +233,88 @@ export class Level2Scene extends Scene {
     }
 
     showGameOver() {
-        this.gameOver = true;
+        if (!this.gameOver) {
+            this.gameOver = true;
 
-        // Create semi-transparent overlay
-        const overlay = this.add.rectangle(
-            this.cameras.main.width / 2,
-            this.cameras.main.height / 2,
-            this.cameras.main.width,
-            this.cameras.main.height,
-            0x000000,
-            0.7
-        );
-        overlay.setDepth(4);
+            // Create semi-transparent overlay
+            const overlay = this.add.rectangle(
+                this.cameras.main.width / 2,
+                this.cameras.main.height / 2,
+                this.cameras.main.width,
+                this.cameras.main.height,
+                0x000000,
+                0.7
+            );
+            overlay.setDepth(4);
 
-        // Add game over text
-        const gameOverText = this.add.text(
-            this.cameras.main.width / 2,
-            this.cameras.main.height / 2 - 100,
-            "GAME OVER",
-            {
-                fontSize: "40px",
-                fill: "#aa0",
-                fontFamily: "Western, Arial",
-                stroke: "#000",
-                strokeThickness: 2,
-            }
-        );
-        gameOverText.setOrigin(0.5);
-        gameOverText.setDepth(5);
+            // Add game over text
+            const gameOverText = this.add.text(
+                this.cameras.main.width / 2,
+                this.cameras.main.height / 2 - 100,
+                "GAME OVER",
+                {
+                    fontSize: "40px",
+                    fill: "#aa0",
+                    fontFamily: "Western, Arial",
+                    stroke: "#000",
+                    strokeThickness: 2,
+                }
+            );
+            gameOverText.setOrigin(0.5);
+            gameOverText.setDepth(5);
 
-        // Add final score
-        const finalScoreText = this.add.text(
-            this.cameras.main.width / 2,
-            this.cameras.main.height / 2,
-            `Final Score: ${this.score}`,
-            {
-                fontSize: "32px",
-                fill: "#fff",
-                fontFamily: "Western, Arial",
-                stroke: "#000",
-                strokeThickness: 2,
-            }
-        );
-        finalScoreText.setOrigin(0.5);
-        finalScoreText.setDepth(5);
+            // Add final score
+            const finalScoreText = this.add.text(
+                this.cameras.main.width / 2,
+                this.cameras.main.height / 2,
+                `Final Score: ${this.score}`,
+                {
+                    fontSize: "32px",
+                    fill: "#fff",
+                    fontFamily: "Western, Arial",
+                    stroke: "#000",
+                    strokeThickness: 2,
+                }
+            );
+            finalScoreText.setOrigin(0.5);
+            finalScoreText.setDepth(5);
 
-        // Add restart button
-        const restartButton = this.add.text(
-            this.cameras.main.width / 2,
-            this.cameras.main.height / 2 + 100,
-            "Play Again",
-            {
-                fontSize: "32px",
-                fill: "#ff5",
-                backgroundColor: "#444",
-                padding: { x: 20, y: 10 },
-                fontFamily: "Western, Arial",
-                stroke: "#000",
-                strokeThickness: 1,
-            }
-        );
-        restartButton.setOrigin(0.5);
-        restartButton.setDepth(5);
-        restartButton.setInteractive({ useHandCursor: true });
+            // Add restart button
+            const restartButton = this.add.text(
+                this.cameras.main.width / 2,
+                this.cameras.main.height / 2 + 100,
+                "Play Again",
+                {
+                    fontSize: "32px",
+                    fill: "#ff5",
+                    backgroundColor: "#444",
+                    padding: { x: 20, y: 10 },
+                    fontFamily: "Western, Arial",
+                    stroke: "#000",
+                    strokeThickness: 1,
+                }
+            );
+            restartButton.setOrigin(0.5);
+            restartButton.setDepth(5);
+            restartButton.setInteractive({ useHandCursor: true });
 
-        // Hover effects
-        restartButton.on("pointerover", () => {
-            restartButton.setStyle({ fill: "#ffff00" });
-        });
+            // Hover effects
+            restartButton.on("pointerover", () => {
+                restartButton.setStyle({ fill: "#ffff00" });
+            });
 
-        restartButton.on("pointerout", () => {
-            restartButton.setStyle({ fill: "#fff" });
-        });
+            restartButton.on("pointerout", () => {
+                restartButton.setStyle({ fill: "#fff" });
+            });
 
-        // Click handler
-        restartButton.on("pointerdown", () => {
-            // this.cameras.main.fadeOut(1000);
-            setTimeout(() => {
-                this.scene.restart();
-            }, 100);
-        });
+            // Click handler
+            restartButton.on("pointerdown", () => {
+                // this.cameras.main.fadeOut(1000);
+                setTimeout(() => {
+                    this.scene.restart();
+                }, 100);
+            });
+        }
     }
 
     shoot(pointer) {
@@ -357,6 +361,28 @@ export class Level2Scene extends Scene {
                         onComplete: () => p.destroy(),
                     });
                 }
+                const pointText = this.add.text(
+                    target.x,
+                    target.y,
+                    target.points,
+                    {
+                        font: "32px Arial",
+                        fill: "#ffffff",
+                    }
+                );
+
+                this.tweens.add({
+                    targets: pointText,
+                    x: 120,
+                    y: 10,
+                    alpha: 0,
+                    scale: 0.5,
+                    duration: 1500,
+                    ease: "Power2",
+                    onComplete: () => {
+                        pointText.destroy();
+                    },
+                });
 
                 target.destroy();
                 this.score += target.points;
@@ -373,7 +399,9 @@ export class Level2Scene extends Scene {
                         }, 500);
 
                         this.time.delayedCall(500, () => {
-                            this.showGameOver();
+                            if (!this.gameOver) {
+                                this.showGameOver();
+                            }
                         });
                     }
                 });
@@ -388,7 +416,9 @@ export class Level2Scene extends Scene {
             }, 500);
 
             this.time.delayedCall(500, () => {
-                this.showGameOver();
+                if (!this.gameOver) {
+                    this.showGameOver();
+                }
             });
         }
     }
