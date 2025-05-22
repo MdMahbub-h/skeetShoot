@@ -1,0 +1,35 @@
+body {
+    margin: 0;
+    padding: 0;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #1c172e;
+}
+
+#app {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nipple {
+    background: none !important;
+}
+
+.nipple .back {
+    background: url("/public/assets//control.png") no-repeat center center !important;
+    background-size: contain !important;
+    border: none !important;
+    width: 100px !important;
+    height: 100px !important;
+}
+
+.nipple .front {
+    background: url("/public/assets//controlMiddle.png") no-repeat center center !important;
+    background-size: contain !important;
+    border: none !important;
+    width: 50px !important;
+    height: 50px !important;
+}
